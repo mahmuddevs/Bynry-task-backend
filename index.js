@@ -15,6 +15,9 @@ app.use('/uploads', express.static('uploads'))
 
 
 //routes
+app.get('/', (req, res) => {
+    res.send('Server Running')
+})
 app.use('/users', userRoutes)
 
 mongoose.connect(process.env.MONGO_URI)
