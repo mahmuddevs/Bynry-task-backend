@@ -22,6 +22,24 @@ userRoutes.get('/', async (req, res) => {
     }
 })
 
+//get single user
+userRoutes.get('/:id', async (req, res) => {
+    const { id } = req.params
+    try {
+        const user = await User.findById(id)
+
+        if (!user) {
+            return res.send({ message: "Failed to fetch user" })
+        }
+
+        return res.send(user)
+
+    } catch (error) {
+        console.error("Error fetching user:", error);
+        res.status(500).json({ error: "Error fetching user" });
+    }
+})
+
 //create user
 userRoutes.post("/create", upload.single('user_image'), async (req, res) => {
     const { name, email, description, address, phone, socials } = req.body;
