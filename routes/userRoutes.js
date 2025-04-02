@@ -41,11 +41,11 @@ userRoutes.get('/:id', async (req, res) => {
 })
 
 //create user
-userRoutes.post("/create", upload.single('user_image'), async (req, res) => {
-    const { name, email, description, address, phone, socials } = req.body;
+userRoutes.post("/create", upload.single('photo'), async (req, res) => {
+    const { name, email, description, address, contact } = req.body;
     const userImage = req.file;
 
-    if (!name || !email || !description || !address || !phone) {
+    if (!name || !email || !description || !address) {
         return res.status(400).json({ error: "One or more fields are required" });
     }
 
@@ -64,10 +64,6 @@ userRoutes.post("/create", upload.single('user_image'), async (req, res) => {
             longitude: parseFloat(locationData.lon),
         };
 
-        const contact = {
-            phone,
-            social: socials || {},
-        };
 
         const payload = {
             name,
@@ -79,11 +75,12 @@ userRoutes.post("/create", upload.single('user_image'), async (req, res) => {
         };
 
         const result = await User.create(payload);
+
         if (!result) {
             return res.send({ success: false, message: "Faild To Add User" })
         }
 
-        return res.send({ success: true, message: "User Added User" })
+        return res.send({ success: true, message: "User Added Successfully" })
 
 
     } catch (error) {
