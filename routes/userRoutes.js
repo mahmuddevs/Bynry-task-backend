@@ -90,24 +90,34 @@ userRoutes.post("/create", upload.single('photo'), async (req, res) => {
 });
 
 //Edit user
-userRoutes.patch('/update/:id', async (req, res) => {
-    const { id } = req.params
-    const data = req.body
+userRoutes.patch('/update/:id', upload.single('photo'), async (req, res) => {
+    const { id } = req.params;
+    const data = req.body;
+    const photo = req.file;
+
+    let payload;
+
+    if (!photo) {
+        payload = { ...data };
+    } else {
+        payload = { ...data, photo: photo.path };
+    }
+
     try {
-        const result = await User.findByIdAndUpdate(id, data)
+        const result = await User.findByIdAndUpdate(id, payload, { new: true });
 
         if (!result) {
-            return res.send({ success: false, message: "Failed to update user" })
+            return res.send({ success: false, message: "Failed to update user" });
         }
 
-        return res.send({ success: true, message: "User update successfully." })
+        return res.send({ success: true, message: "User updated successfully.", user: result });
 
     } catch (error) {
         console.error("Error updating user:", error);
         res.status(500).json({ error: "Error updating user" });
     }
+});
 
-})
 
 //delete user
 userRoutes.delete('/delete/:id', async (req, res) => {
