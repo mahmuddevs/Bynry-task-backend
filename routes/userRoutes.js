@@ -46,7 +46,7 @@ userRoutes.post("/create", upload.single('photo'), async (req, res) => {
     const userImage = req.file;
 
     if (!name || !email || !description || !address) {
-        return res.status(400).json({ error: "One or more fields are required" });
+        return res.send({ message: "One or more fields are required" });
     }
 
     try {
@@ -54,7 +54,7 @@ userRoutes.post("/create", upload.single('photo'), async (req, res) => {
         const response = await axios.get(url);
 
         if (response.data.length === 0) {
-            return res.status(404).json({ error: "Address not found" });
+            return res.send({ messange: "Address not found" });
         }
 
         const locationData = response.data[0];
@@ -68,7 +68,7 @@ userRoutes.post("/create", upload.single('photo'), async (req, res) => {
         const payload = {
             name,
             email,
-            photo: userImage?.path || '/uploads/default-user.jpg',
+            photo: userImage?.path || 'uploads/default-user.jpg',
             description,
             location,
             contact,
@@ -80,7 +80,7 @@ userRoutes.post("/create", upload.single('photo'), async (req, res) => {
             return res.send({ success: false, message: "Faild To Add User" })
         }
 
-        return res.send({ success: true, message: "User Added Successfully" })
+        return res.send({ success: true, message: "User Added Successfully", user: result })
 
 
     } catch (error) {
